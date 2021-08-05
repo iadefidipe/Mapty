@@ -23,10 +23,10 @@ const inputElevation = document.querySelector('.form__input--elevation');
 navigator.geolocation.getCurrentPosition(
   function (position) {
     //!the success callback function is usually called with a position  parameter
-    console.log(position);
+    // console.log(position);
     const { latitude, longitude } = position.coords;
-    console.log(latitude, longitude);
-    console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+    // console.log(latitude, longitude);
+    // console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
 
     const coords = [latitude, longitude]
     const map = L.map('map').setView(coords, 13);
@@ -36,10 +36,28 @@ navigator.geolocation.getCurrentPosition(
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    L.marker(coords)
+    
+
+      //* We need a way to handle events on the map, so when we click on a particular location on the map we can place markers there. we cant handle this event wuith the traditional addEventListener. there is an event handler method provided by the map itself
+
+      map.on('click', function(mapEvent){
+          console.log(mapEvent);
+          const {lat,lng} = mapEvent.latlng;
+
+
+          L.marker([lat,lng])
       .addTo(map)
-      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+      .bindPopup(
+          L.popup({
+              maxWidth: 250,
+              minWidth:100,
+              autoClose:false,
+              closeOnClick:false,
+              className: 'running-popup'
+          }))
+          .setPopupContent('Workout')
       .openPopup();
+      })
   },
   function () {
     alert('Could not get your postion');
@@ -48,3 +66,6 @@ navigator.geolocation.getCurrentPosition(
 
 //  TODO: Displaying a map using a 3rd party library leaflet
 // ? CDN => COntent delivery network
+
+
+//  TODO: Displaying a map using a 3rd party library leaflet
